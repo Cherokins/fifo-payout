@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FIFO Payout</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCO4bCT2Si5F88LIYT-VStxTh8dbQJVqKM",
+            authDomain: "fifo-payout-engine.firebaseapp.com",
+            projectId: "fifo-payout-engine",
+            storageBucket: "fifo-payout-engine.firebasestorage.app",
+            messagingSenderId: "887817353062",
+            appId: "1:887817353062:web:efe94e1b7c561183f53aa7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        window.onload = () => {
+            document.getElementById('signin-btn').onclick = async () => {
+                try {
+                    const result = await signInWithPopup(auth, provider);
+                    const user = result.user;
+                    const userRef = doc(db, 'users', user.uid);
+                    const userSnap = await getDoc(userRef);
+                    if (!userSnap.exists()) {
+                        await setDoc(userRef, { email: user.email, balance: 0, queuePosition: 0 });
+                    }
+                    document.getElementById('status').innerHTML = `Logged in: ${user.email}`;
+                    const balanceData = await getDoc(userRef);
+                    document.getElementById('balance').innerHTML = `Balance: ${balanceData.data().balance} KES`;
+                } catch (error) {
+                    alert(error.message);
+                }
+            };
+        };
+    </script>
+</head>
+<body>
+    <h1>FIFO Payout Engine</h1>
+    <button id="signin-btn">Sign in with Google</button>
+    <div id="status"></div>
+    <div id="balance"></div>
+</body>
+</html>

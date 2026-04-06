@@ -1,50 +1,268 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>FIFO Payout</title>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCO4bCT2Si5F88LIYT-VStxTh8dbQJVqKM",
-            authDomain: "fifo-payout-engine.firebaseapp.com",
-            projectId: "fifo-payout-engine",
-            storageBucket: "fifo-payout-engine.firebasestorage.app",
-            messagingSenderId: "887817353062",
-            appId: "1:887817353062:web:efe94e1b7c561183f53aa7"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const provider = new GoogleAuthProvider();
-
-        window.onload = () => {
-            document.getElementById('signin-btn').onclick = async () => {
-                try {
-                    const result = await signInWithPopup(auth, provider);
-                    const user = result.user;
-                    const userRef = doc(db, 'users', user.uid);
-                    const userSnap = await getDoc(userRef);
-                    if (!userSnap.exists()) {
-                        await setDoc(userRef, { email: user.email, balance: 0, queuePosition: 0 });
-                    }
-                    document.getElementById('status').innerHTML = `Logged in: ${user.email}`;
-                    const balanceData = await getDoc(userRef);
-                    document.getElementById('balance').innerHTML = `Balance: ${balanceData.data().balance} KES`;
-                } catch (error) {
-                    alert(error.message);
-                }
-            };
-        };
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>FIFO Payout • Code98</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:#f1f5f9;color:#0f172a;padding:1rem;}
+        .container{max-width:800px;margin:0 auto;}
+        .card{background:#fff;border-radius:2rem;padding:1.8rem;margin-bottom:1rem;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+        .balance-card{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;border-radius:2rem;padding:2rem;margin-bottom:1rem;}
+        .balance-label{font-size:0.9rem;opacity:0.8;letter-spacing:0.5px;}
+        .balance-amount{font-size:3.5rem;font-weight:800;margin:0.5rem 0;word-break:break-word;}
+        .queue-badge{background:#334155;display:inline-block;padding:0.3rem 1rem;border-radius:2rem;font-size:0.8rem;margin-top:0.5rem;}
+        .invest-box{background:#f8fafc;border-radius:1.5rem;padding:1.5rem;}
+        .input-group{display:flex;gap:0.8rem;flex-wrap:wrap;margin:1rem 0;}
+        input{flex:1;padding:1rem;border:1px solid #e2e8f0;border-radius:1rem;font-size:1rem;font-family:inherit;}
+        button{background:#0f172a;color:#fff;border:none;padding:1rem 1.8rem;border-radius:1rem;font-weight:600;cursor:pointer;transition:all 0.2s;font-size:1rem;}
+        button:hover{background:#1e293b;transform:scale(0.98);}
+        .profit-note{font-size:0.8rem;color:#475569;margin-top:0.5rem;}
+        .info-card{background:#eef2ff;border-radius:1rem;padding:1rem;margin:1rem 0;}
+        .tx-list{max-height:300px;overflow-y:auto;}
+        .tx-item{padding:0.8rem;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;flex-wrap:wrap;}
+        .tx-positive{color:#10b981;font-weight:600;}
+        .hidden{display:none;}
+        .auth-card{text-align:center;padding:2rem;}
+        .google-btn{background:#0f172a;width:100%;max-width:300px;margin:1rem auto;}
+        .status{font-size:0.85rem;color:#475569;margin-top:0.5rem;}
+        footer{text-align:center;padding:2rem 0;color:#94a3b8;font-size:0.75rem;}
+        @media (max-width:500px){.balance-amount{font-size:2.5rem;} .card{padding:1.2rem;}}
+    </style>
 </head>
 <body>
-    <h1>FIFO Payout Engine</h1>
-    <button id="signin-btn">Sign in with Google</button>
-    <div id="status"></div>
-    <div id="balance"></div>
+<div class="container" id="app">
+    <div id="authScreen" class="card auth-card">
+        <h1 style="font-size:2rem;margin-bottom:0.5rem;">⚡ CODE98</h1>
+        <p style="margin-bottom:2rem;">FIFO Payout Engine</p>
+        <button class="google-btn" id="googleBtn">🔐 Sign in with Google</button>
+        <div id="authStatus" class="status"></div>
+    </div>
+
+    <div id="dashScreen" class="hidden">
+        <div class="balance-card">
+            <div class="balance-label">Your balance</div>
+            <div class="balance-amount" id="balance">0 <span style="font-size:1.2rem;">KES</span></div>
+            <div class="queue-badge" id="queueBadge">Queue #0</div>
+        </div>
+
+        <div class="card invest-box">
+            <h3 style="margin-bottom:0.5rem;">📈 Invest +40% profit</h3>
+            <p style="font-size:0.85rem;color:#475569;">Pay any amount → Get 40% added to balance</p>
+            <div class="input-group">
+                <input type="number" id="amount" placeholder="Amount (KES)" min="10">
+                <button id="investBtn">💸 Invest</button>
+            </div>
+            <div class="profit-note">Example: Pay 500 KES → +700 KES balance</div>
+        </div>
+
+        <div class="card" id="queueInfo">
+            <div class="info-card" id="queueMessage">
+                ⏳ Checking queue status...
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom:1rem;">📜 Transactions</h3>
+            <div id="txList" class="tx-list">
+                <div class="tx-item">No transactions yet</div>
+            </div>
+        </div>
+        <footer>FIFO • First In First Out • Withdrawal at 1,000 KES</footer>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, writeBatch } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+    const config = {
+        apiKey: "AIzaSyCO4bCT2Si5F88LIYT-VStxTh8dbQJVqKM",
+        authDomain: "fifo-payout-engine.firebaseapp.com",
+        projectId: "fifo-payout-engine",
+        storageBucket: "fifo-payout-engine.firebasestorage.app",
+        messagingSenderId: "887817353062",
+        appId: "1:887817353062:web:efe94e1b7c561183f53aa7"
+    };
+    const app = initializeApp(config);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
+
+    let currentUserId = null;
+
+    const authScreen = document.getElementById('authScreen');
+    const dashScreen = document.getElementById('dashScreen');
+    const googleBtn = document.getElementById('googleBtn');
+    const investBtn = document.getElementById('investBtn');
+    const amountInput = document.getElementById('amount');
+    const balanceSpan = document.getElementById('balance');
+    const queueBadge = document.getElementById('queueBadge');
+    const queueMessageDiv = document.getElementById('queueMessage');
+    const txListDiv = document.getElementById('txList');
+
+    // Update user dashboard
+    async function updateDashboard(userId) {
+        const userRef = doc(db, 'users', userId);
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) return;
+        const data = userSnap.data();
+        const balance = data.balance || 0;
+        balanceSpan.innerHTML = balance + ' <span style="font-size:1.2rem;">KES</span>';
+        queueBadge.innerText = `Queue #${data.queuePosition || 0}`;
+        
+        // Queue logic
+        if (balance >= 1000) {
+            // Get all users with balance >= 1000 ordered by when they reached
+            const q = query(collection(db, 'users'), where('balance', '>=', 1000), orderBy('reached1000At', 'asc'));
+            const snap = await getDocs(q);
+            let position = 1;
+            let found = false;
+            snap.forEach(doc => {
+                if (doc.id === userId && !found) {
+                    queueMessageDiv.innerHTML = `✅ You are #${position} in queue. When #${position-1 || 'you'} gets paid, you're next.`;
+                    found = true;
+                }
+                if (!found) position++;
+            });
+            if (!found) queueMessageDiv.innerHTML = `⚠️ Balance ≥1000 but queue position error. Contact support.`;
+        } else {
+            const need = 1000 - balance;
+            queueMessageDiv.innerHTML = `📌 Need ${need} more KES to reach 1,000 and enter FIFO queue. Invest now.`;
+        }
+        
+        // Load transactions
+        const txQuery = query(collection(db, 'investments'), where('userId', '==', userId), orderBy('timestamp', 'desc'), orderBy('__name__', 'desc'));
+        const txSnap = await getDocs(txQuery);
+        if (txSnap.empty) {
+            txListDiv.innerHTML = '<div class="tx-item">No transactions yet</div>';
+        } else {
+            let html = '';
+            txSnap.forEach(doc => {
+                const t = doc.data();
+                html += `<div class="tx-item"><span>+${t.totalAdded} KES</span><span class="tx-positive">💰 ${t.amount} invested</span><span style="font-size:0.7rem;">${new Date(t.timestamp).toLocaleString()}</span></div>`;
+            });
+            txListDiv.innerHTML = html;
+        }
+    }
+
+    // Process investment
+    async function invest(amount) {
+        if (!currentUserId) throw new Error('Not logged in');
+        if (amount < 10) throw new Error('Minimum 10 KES');
+        
+        const profit = amount * 0.4;
+        const totalAdd = amount + profit;
+        
+        const userRef = doc(db, 'users', currentUserId);
+        const userSnap = await getDoc(userRef);
+        const oldBalance = userSnap.data().balance || 0;
+        const newBalance = oldBalance + totalAdd;
+        const wasBelow = oldBalance < 1000;
+        const nowAbove = newBalance >= 1000;
+        
+        const batch = writeBatch(db);
+        batch.update(userRef, { balance: newBalance });
+        
+        // If first time reaching 1000, set timestamp
+        if (wasBelow && nowAbove && !userSnap.data().reached1000At) {
+            batch.update(userRef, { reached1000At: new Date().toISOString() });
+        }
+        
+        const txRef = doc(collection(db, 'investments'));
+        batch.set(txRef, {
+            userId: currentUserId,
+            amount: amount,
+            profit: profit,
+            totalAdded: totalAdd,
+            timestamp: new Date().toISOString()
+        });
+        await batch.commit();
+        
+        // Check for withdrawals (FIFO)
+        await checkFIFOWithdrawals();
+        await updateDashboard(currentUserId);
+    }
+
+    // FIFO withdrawal checker
+    async function checkFIFOWithdrawals() {
+        const q = query(collection(db, 'users'), where('balance', '>=', 1000), orderBy('reached1000At', 'asc'));
+        const eligible = await getDocs(q);
+        if (eligible.empty) return;
+        
+        // Get first person in queue (oldest who reached 1000)
+        const first = eligible.docs[0];
+        const userId = first.id;
+        const currentBalance = first.data().balance;
+        
+        if (currentBalance >= 1000) {
+            // Deduct 1000
+            const newBalance = currentBalance - 1000;
+            await updateDoc(doc(db, 'users', userId), { balance: newBalance });
+            
+            // Record withdrawal (you'll connect Paystack here later)
+            await addDoc(collection(db, 'withdrawals'), {
+                userId: userId,
+                amount: 1000,
+                status: 'pending',
+                requestedAt: new Date().toISOString()
+            });
+            
+            console.log(`Withdrawal triggered for ${userId}. New balance: ${newBalance}`);
+            
+            // Recursively check next person
+            await checkFIFOWithdrawals();
+        }
+    }
+
+    // Auth state
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            currentUserId = user.uid;
+            const userRef = doc(db, 'users', user.uid);
+            const snap = await getDoc(userRef);
+            if (!snap.exists()) {
+                await setDoc(userRef, {
+                    email: user.email,
+                    balance: 0,
+                    queuePosition: 0,
+                    createdAt: new Date().toISOString(),
+                    name: user.displayName || ''
+                });
+            }
+            authScreen.classList.add('hidden');
+            dashScreen.classList.remove('hidden');
+            await updateDashboard(user.uid);
+        } else {
+            currentUserId = null;
+            authScreen.classList.remove('hidden');
+            dashScreen.classList.add('hidden');
+        }
+    });
+
+    googleBtn.onclick = () => signInWithPopup(auth, provider);
+    investBtn.onclick = async () => {
+        const amt = parseFloat(amountInput.value);
+        if (!amt || amt < 10) {
+            alert('Enter amount (minimum 10 KES)');
+            return;
+        }
+        investBtn.disabled = true;
+        investBtn.innerText = 'Processing...';
+        try {
+            await invest(amt);
+            amountInput.value = '';
+            alert(`✅ Invested ${amt} KES! +${amt*0.4} KES profit added.`);
+        } catch (e) {
+            alert('Error: ' + e.message);
+        } finally {
+            investBtn.disabled = false;
+            investBtn.innerText = '💸 Invest';
+        }
+    };
+</script>
 </body>
 </html>

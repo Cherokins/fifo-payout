@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FIFO Payout Engine</title>
+  <title>CODE98 • FIFO Payout Engine</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -17,494 +17,415 @@
   <script src="https://js.paystack.co/v1/inline.js"></script>
 
   <style>
-    /* ── Variables ───────────────────────────────── */
-    :root {
-      --bg:        #07070f;
-      --bg2:       #0c0c18;
-      --surface:   #101020;
-      --surface2:  #16162a;
-      --border:    rgba(255,255,255,0.06);
-      --border2:   rgba(255,255,255,0.11);
-      --gold:      #c9a84c;
-      --gold-lt:   #debb6e;
-      --gold-dim:  rgba(201,168,76,0.12);
-      --text:      #eeeef8;
-      --dim:       #8888aa;
-      --muted:     #44445c;
-      --green:     #2ecc9a;
-      --green-dim: rgba(46,204,154,0.10);
-      --red:       #ff4d6a;
-      --red-dim:   rgba(255,77,106,0.10);
-      --amber:     #f59e2b;
-      --r:         14px;
-      --rsm:       8px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
     body {
-      background: var(--bg);
-      color: var(--text);
+      background: #0a0a12;
+      color: #ededf5;
       font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
-      line-height: 1.5;
     }
 
-    ::-webkit-scrollbar { width:4px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius:2px; }
-
-    /* ── Auth Screen ─────────────────────────────── */
+    /* Auth Screen */
     #auth-screen {
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      background:
-        radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 65%),
-        var(--bg);
+      background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,168,76,0.08) 0%, transparent 70%), #0a0a12;
     }
 
     .auth-card {
-      width: 360px;
+      background: #12121f;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      padding: 48px 36px;
+      width: 380px;
       text-align: center;
-      padding: 52px 36px 40px;
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      border-radius: 20px;
-      box-shadow: 0 50px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.025);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 11px;
-      margin-bottom: 10px;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5);
     }
 
     .brand-icon {
-      width: 40px; height: 40px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
-      border-radius: 9px;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 15px; color: #000; letter-spacing: -0.5px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, #c9a84c, #debb6e);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 800;
+      color: #000;
+      margin: 0 auto 16px;
     }
 
     .brand-name {
       font-family: 'Instrument Serif', serif;
-      font-size: 24px; letter-spacing: -0.3px;
+      font-size: 28px;
+      letter-spacing: -0.5px;
     }
 
     .auth-tag {
-      font-size: 12px; color: var(--dim);
-      margin-bottom: 32px;
-    }
-
-    .auth-divider {
-      height: 1px; background: var(--border2); margin: 20px 0;
+      font-size: 13px;
+      color: #8888aa;
+      margin: 12px 0 28px;
     }
 
     .btn-google {
       width: 100%;
-      padding: 13px 20px;
-      background: var(--surface2);
-      border: 1px solid var(--border2);
-      border-radius: var(--rsm);
-      color: var(--text);
-      font-family: inherit; font-size: 14px; font-weight: 500;
+      padding: 14px 20px;
+      background: #1a1a2e;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 60px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
-      display: flex; align-items: center; justify-content: center; gap: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
       transition: all 0.2s;
     }
 
-    .btn-google:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-1px); }
-
-    .auth-note { font-size: 11px; color: var(--muted); margin-top: 18px; }
-
-    /* ── App Screen ──────────────────────────────── */
-    #app-screen { display: none; }
-
-    /* ── Header ──────────────────────────────────── */
-    .header {
-      position: sticky; top: 0; z-index: 100;
-      height: 54px;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 22px;
-      background: rgba(7,7,15,0.88);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
+    .btn-google:hover {
+      background: #22223b;
+      border-color: rgba(255,255,255,0.2);
+      transform: translateY(-1px);
     }
 
-    .header-brand {
-      display: flex; align-items: center; gap: 8px;
-    }
-
-    .hbrand-icon {
-      width: 28px; height: 28px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 11px; color: #000;
-    }
-
-    .hbrand-name {
-      font-size: 14px; font-weight: 600; letter-spacing: -0.2px;
-    }
-
-    .hbrand-tag {
-      font-size: 10px; font-weight: 600;
-      background: var(--gold-dim); color: var(--gold);
-      padding: 2px 7px; border-radius: 4px;
-      text-transform: uppercase; letter-spacing: 0.6px;
-    }
-
-    .header-right {
-      display: flex; align-items: center; gap: 10px;
-    }
-
-    .user-name { font-size: 13px; font-weight: 500; color: var(--dim); }
-
-    .user-avatar {
-      width: 28px; height: 28px; border-radius: 50%;
-      border: 1.5px solid var(--border2); object-fit: cover;
-    }
-
-    .btn-signout {
-      font-size: 11px; color: var(--muted);
-      background: none; border: 1px solid var(--border);
-      padding: 4px 10px; border-radius: 6px;
-      cursor: pointer; font-family: inherit; transition: all 0.2s;
-    }
-
-    .btn-signout:hover { color: var(--dim); border-color: var(--border2); }
-
-    /* ── Nav ─────────────────────────────────────── */
-    .nav {
-      display: flex; align-items: center; gap: 2px;
-      padding: 0 22px;
-      background: var(--bg2);
-      border-bottom: 1px solid var(--border);
-      overflow-x: auto;
-    }
-
-    .nav-tab {
-      padding: 12px 15px;
-      font-size: 13px; font-weight: 500;
-      color: var(--muted);
-      background: none; border: none;
-      border-bottom: 2px solid transparent;
-      cursor: pointer; font-family: inherit;
-      white-space: nowrap; transition: all 0.2s;
-    }
-
-    .nav-tab:hover { color: var(--dim); }
-    .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
-
-    /* ── Content ─────────────────────────────────── */
-    .content { padding: 22px; max-width: 740px; margin: 0 auto; }
-
-    .tab-pane { display: none; }
-    .tab-pane.active { display: block; }
-
-    /* ── Card ────────────────────────────────────── */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
+    /* App Screen */
+    #app-screen {
+      display: none;
+      max-width: 720px;
+      margin: 0 auto;
       padding: 20px;
     }
 
-    .mb { margin-bottom: 14px; }
-
-    /* ── Balance Hero ────────────────────────────── */
-    .balance-hero {
-      background:
-        radial-gradient(ellipse 80% 110% at 50% 0%, rgba(201,168,76,0.09) 0%, transparent 65%),
-        var(--surface);
-      border: 1px solid rgba(201,168,76,0.18);
-      border-radius: var(--r);
-      padding: 34px 24px 24px;
-      text-align: center;
-      margin-bottom: 14px;
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 20px;
     }
 
-    .bal-label {
-      font-size: 11px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 1.8px;
-      color: var(--muted); margin-bottom: 8px;
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .bal-num {
-      font-family: 'Instrument Serif', serif;
-      font-size: 54px; letter-spacing: -2px; line-height: 1;
-      color: var(--gold-lt);
-    }
-
-    .bal-sub {
-      font-size: 12px; color: var(--muted); margin-top: 6px;
-    }
-
-    .bal-actions {
-      display: flex; gap: 10px; justify-content: center; margin-top: 22px;
-    }
-
-    /* ── Buttons ─────────────────────────────────── */
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 10px 20px; border-radius: var(--rsm);
-      font-size: 13px; font-weight: 600; font-family: inherit;
-      cursor: pointer; border: none; transition: all 0.2s;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #c9a84c, #debb6e);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
       color: #000;
     }
-    .btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
-    .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; filter: none; }
 
-    .btn-outline {
-      background: transparent; border: 1px solid var(--border2); color: var(--dim);
-    }
-    .btn-outline:hover { border-color: rgba(255,255,255,0.22); color: var(--text); }
-
-    .btn-success {
-      background: var(--green-dim); border: 1px solid rgba(46,204,154,0.2); color: var(--green);
-    }
-    .btn-success:hover { background: rgba(46,204,154,0.18); }
-
-    .btn-danger {
-      background: var(--red-dim); border: 1px solid rgba(255,77,106,0.2); color: var(--red);
+    .logo-text {
+      font-family: 'Instrument Serif', serif;
+      font-size: 20px;
     }
 
-    /* ── Stats grid ──────────────────────────────── */
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(201,168,76,0.4);
+    }
+
+    .signout-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #8888aa;
+      padding: 6px 14px;
+      border-radius: 60px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .signout-btn:hover {
+      border-color: rgba(255,255,255,0.25);
+      color: #fff;
+    }
+
+    /* Balance Card */
+    .balance-card {
+      background: linear-gradient(135deg, #12121f, #0e0e18);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 28px;
+      padding: 32px 24px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .balance-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #8888aa;
+    }
+
+    .balance-amount {
+      font-family: 'Instrument Serif', serif;
+      font-size: 56px;
+      color: #debb6e;
+      margin: 12px 0;
+    }
+
+    .queue-status {
+      font-size: 13px;
+      color: #8888aa;
+    }
+
+    /* Stats Grid */
     .stats-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
     }
 
     .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--rsm);
+      background: #12121f;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
       padding: 16px;
+      text-align: center;
     }
 
-    .stat-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.9px; margin-bottom: 5px; }
-    .stat-val { font-family: 'Fira Code', monospace; font-size: 19px; font-weight: 500; }
-    .stat-val.gold { color: var(--gold); }
-    .stat-val.green { color: var(--green); }
+    .stat-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #666680;
+    }
 
-    /* ── Tier grid ───────────────────────────────── */
+    .stat-value {
+      font-family: 'Fira Code', monospace;
+      font-size: 22px;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    .stat-value.gold { color: #c9a84c; }
+    .stat-value.green { color: #2ecc9a; }
+
+    /* Tier Grid */
     .tier-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 14px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin: 16px 0;
     }
 
     .tier-card {
-      background: var(--surface2);
-      border: 1.5px solid var(--border);
-      border-radius: var(--rsm);
-      padding: 15px 10px; text-align: center;
-      cursor: pointer; transition: all 0.2s;
+      background: #12121f;
+      border: 1.5px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
     }
-    .tier-card:hover { border-color: var(--border2); }
-    .tier-card.sel { border-color: var(--gold); background: var(--gold-dim); }
 
-    .tier-amt {
+    .tier-card:hover {
+      border-color: rgba(201,168,76,0.4);
+      transform: translateY(-2px);
+    }
+
+    .tier-card.selected {
+      border-color: #c9a84c;
+      background: rgba(201,168,76,0.08);
+    }
+
+    .tier-amount {
       font-family: 'Instrument Serif', serif;
-      font-size: 26px; color: var(--text); letter-spacing: -0.5px;
-    }
-    .tier-card.sel .tier-amt { color: var(--gold-lt); }
-    .tier-unit { font-size: 10px; color: var(--muted); text-transform: uppercase; }
-    .tier-credit { font-size: 11px; color: var(--green); margin-top: 4px; font-weight: 500; }
-
-    /* ── Tier info box ───────────────────────────── */
-    .tier-info-box {
-      background: var(--bg2); border-radius: var(--rsm);
-      padding: 13px 15px; margin-top: 10px;
-      font-size: 12px; color: var(--dim);
+      font-size: 24px;
+      font-weight: 600;
     }
 
-    /* ── How-it-works steps ──────────────────────── */
-    .step {
-      display: flex; gap: 12px; align-items: flex-start;
+    .tier-get {
+      font-size: 11px;
+      color: #2ecc9a;
+      margin-top: 4px;
     }
 
-    .step-num {
-      width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 700;
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(135deg, #c9a84c, #debb6e);
+      color: #000;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
     }
 
-    .step-title { font-size: 13px; font-weight: 500; }
-    .step-desc  { font-size: 12px; color: var(--dim); margin-top: 2px; }
-
-    /* ── Section title ───────────────────────────── */
-    .sec-title {
-      font-size: 14px; font-weight: 600;
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    .sec-title span { font-size: 12px; font-weight: 400; color: var(--dim); }
-
-    /* ── Position item ───────────────────────────── */
-    .pos-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 13px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .pos-item:last-child { border-bottom: none; }
-
-    .pos-tier { font-size: 13px; font-weight: 600; }
-    .pos-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .pos-bal  { font-family: 'Fira Code', monospace; font-size: 14px; font-weight: 500; }
-
-    .badge {
-      display: inline-block; font-size: 10px; font-weight: 600;
-      padding: 2px 7px; border-radius: 4px;
-      text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
     }
 
-    .badge-wait { background: rgba(245,158,43,0.12); color: var(--amber); }
-    .badge-done { background: rgba(136,136,170,0.08); color: var(--muted); }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
-    /* ── Tx item ─────────────────────────────────── */
+    .btn-outline {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 60px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    /* Transaction List */
+    .tx-list {
+      background: #12121f;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+
     .tx-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 11px 0; border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
-    .tx-item:last-child { border-bottom: none; }
 
-    .tx-icon {
-      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 13px;
+    .tx-item:last-child {
+      border-bottom: none;
     }
-    .tx-icon.deposit    { background: var(--green-dim); color: var(--green); }
-    .tx-icon.credit     { background: var(--gold-dim);  color: var(--gold);  }
-    .tx-icon.withdrawal { background: var(--red-dim);   color: var(--red);   }
 
-    .tx-info   { flex: 1; }
-    .tx-type   { font-size: 13px; font-weight: 500; }
-    .tx-ref    { font-size: 10px; color: var(--muted); font-family: 'Fira Code', monospace; }
-    .tx-date   { font-size: 11px; color: var(--muted); }
-    .tx-amount { font-family: 'Fira Code', monospace; font-size: 14px; font-weight: 500; }
-    .tx-amount.pos  { color: var(--green); }
-    .tx-amount.cred { color: var(--gold);  }
-    .tx-amount.neg  { color: var(--red);   }
+    .tx-type {
+      font-size: 13px;
+      font-weight: 500;
+    }
 
-    /* ── Modal ───────────────────────────────────── */
+    .tx-type.invest { color: #2ecc9a; }
+    .tx-type.credit { color: #c9a84c; }
+    .tx-type.withdraw { color: #ff6b6b; }
+
+    .tx-amount {
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+    }
+
+    .tx-date {
+      font-size: 10px;
+      color: #666680;
+    }
+
+    /* Modal */
     .modal-overlay {
-      position: fixed; inset: 0; z-index: 1000;
-      background: rgba(0,0,0,0.72); backdrop-filter: blur(5px);
-      display: flex; align-items: center; justify-content: center; padding: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.hidden {
+      display: none;
     }
 
     .modal {
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      border-radius: 16px; padding: 28px;
-      width: 100%; max-width: 400px;
-      box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+      background: #12121f;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 28px;
+      padding: 32px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
     }
 
-    .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 5px; }
-    .modal-sub   { font-size: 13px; color: var(--dim); margin-bottom: 22px; }
-
-    .form-lbl {
-      display: block; font-size: 12px; font-weight: 500;
-      color: var(--dim); margin-bottom: 6px;
+    .modal h3 {
+      font-size: 24px;
+      margin-bottom: 8px;
     }
 
-    .form-input {
-      width: 100%;
-      background: var(--bg2); border: 1px solid var(--border2);
-      border-radius: var(--rsm);
-      padding: 11px 14px; margin-bottom: 14px;
-      color: var(--text);
-      font-family: 'Fira Code', monospace; font-size: 14px;
-      outline: none; transition: border-color 0.2s;
-    }
-    .form-input:focus { border-color: var(--gold); }
-
-    .modal-note {
-      background: var(--bg2); border-radius: var(--rsm);
-      padding: 12px 14px; font-size: 12px; color: var(--dim);
-      margin-bottom: 18px;
-    }
-
-    .modal-actions { display: flex; gap: 10px; }
-    .modal-actions .btn { flex: 1; padding: 12px; }
-
-    /* ── Admin ───────────────────────────────────── */
-    .admin-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px;
-    }
-
-    .house-stat {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: var(--rsm); padding: 16px;
-    }
-
-    .withdraw-req {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: var(--rsm); margin-bottom: 8px;
-    }
-
-    .wr-name { font-size: 13px; font-weight: 500; }
-    .wr-phone { font-size: 11px; color: var(--dim); font-family: 'Fira Code', monospace; }
-    .wr-date  { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .wr-amt   { font-family: 'Fira Code', monospace; font-size: 15px; color: var(--gold); margin-bottom: 6px; }
-
-    /* ── Spinner / Toast / Utils ─────────────────── */
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .spinner {
-      width: 16px; height: 16px; border-radius: 50;
-      border: 2px solid rgba(0,0,0,0.2); border-top-color: #000;
-      border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block;
+    .modal-amount {
+      font-size: 36px;
+      color: #c9a84c;
+      margin: 16px 0;
     }
 
     .toast {
-      position: fixed; bottom: 22px; right: 22px; z-index: 2000;
-      background: var(--surface); border: 1px solid var(--border2);
-      border-radius: 10px; padding: 13px 18px; font-size: 13px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
-      max-width: 300px;
-      transform: translateY(80px); opacity: 0;
-      transition: all 0.32s cubic-bezier(0.34,1.56,0.64,1);
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a2e;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 60px;
+      padding: 12px 24px;
+      font-size: 13px;
+      z-index: 1100;
+      transition: all 0.3s;
     }
-    .toast.show { transform: translateY(0); opacity: 1; }
-    .toast.success { border-left: 3px solid var(--green); }
-    .toast.error   { border-left: 3px solid var(--red);   }
-    .toast.info    { border-left: 3px solid var(--gold);  }
 
-    .empty { text-align: center; padding: 36px 20px; font-size: 13px; color: var(--muted); }
+    .hidden {
+      display: none !important;
+    }
 
-    .hidden { display: none !important; }
+    .empty {
+      text-align: center;
+      padding: 40px;
+      color: #666680;
+    }
 
     @media (max-width: 500px) {
-      .bal-num { font-size: 42px; }
-      .content { padding: 14px; }
-      .admin-grid { grid-template-columns: 1fr; }
+      #app-screen { padding: 12px; }
+      .balance-amount { font-size: 42px; }
+      .tier-grid { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     AUTH SCREEN
-════════════════════════════════════════════════════════════════════════ -->
 <div id="auth-screen">
   <div class="auth-card">
-    <div class="brand">
-      <div class="brand-icon">FP</div>
-      <span class="brand-name">FIFO Payout Engine</span>
-    </div>
-    <div class="auth-tag">First In, First Out &mdash; Transparent Chain Payouts</div>
-    <div class="auth-divider"></div>
-    <button class="btn-google" onclick="signInGoogle()">
-      <svg width="16" height="16" viewBox="0 0 24 24">
+    <div class="brand-icon">98</div>
+    <div class="brand-name">CODE98</div>
+    <div class="auth-tag">FIFO • Sequential Payout Engine</div>
+    <button class="btn-google" id="google-signin-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24">
         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
@@ -512,748 +433,370 @@
       </svg>
       Continue with Google
     </button>
-    <p class="auth-note">By continuing you accept the platform terms of use</p>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     APP SCREEN
-════════════════════════════════════════════════════════════════════════ -->
 <div id="app-screen">
-
-  <!-- Header -->
-  <header class="header">
-    <div class="header-brand">
-      <div class="hbrand-icon">FP</div>
-      <div class="hbrand-name">FIFO Payout</div>
-      <div class="hbrand-tag">Engine</div>
+  <div class="header">
+    <div class="logo">
+      <div class="logo-icon">98</div>
+      <div class="logo-text">CODE98</div>
     </div>
-    <div class="header-right">
-      <span class="user-name" id="hdr-name"></span>
-      <img class="user-avatar" id="hdr-avatar" src="" alt="">
-      <button class="btn-signout" onclick="doSignOut()">Sign out</button>
+    <div class="user-info">
+      <span id="user-name"></span>
+      <img class="user-avatar" id="user-avatar" src="">
+      <button class="signout-btn" id="signout-btn">Exit</button>
     </div>
-  </header>
+  </div>
 
-  <!-- Nav tabs -->
-  <nav class="nav">
-    <button class="nav-tab active" data-tab="overview" onclick="gotoTab('overview')">Overview</button>
-    <button class="nav-tab" data-tab="invest"   onclick="gotoTab('invest')">Invest</button>
-    <button class="nav-tab" data-tab="positions" onclick="gotoTab('positions')">Positions</button>
-    <button class="nav-tab" data-tab="history"  onclick="gotoTab('history')">History</button>
-    <button class="nav-tab hidden" id="admin-tab" data-tab="admin" onclick="gotoTab('admin')">Admin</button>
-  </nav>
+  <div class="balance-card">
+    <div class="balance-label">Wallet Balance</div>
+    <div class="balance-amount" id="balance">KES 0</div>
+    <div class="queue-status" id="queue-status">—</div>
+  </div>
 
-  <!-- ── OVERVIEW ──────────────────────────────── -->
-  <div class="content">
-    <div class="tab-pane active" id="tab-overview">
-
-      <div class="balance-hero">
-        <div class="bal-label">Wallet Balance</div>
-        <div class="bal-num" id="ov-balance">KES 0</div>
-        <div class="bal-sub" id="ov-status">Accumulate KES 2,000 to unlock withdrawal</div>
-        <div class="bal-actions">
-          <button class="btn btn-primary" id="btn-withdraw" onclick="openWithdraw()" disabled>Withdraw</button>
-          <button class="btn btn-outline" onclick="gotoTab('invest')">+ Invest</button>
-        </div>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-lbl">Invested</div>
-          <div class="stat-val gold" id="ov-invested">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-lbl">Credits</div>
-          <div class="stat-val green" id="ov-credits">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-lbl">Positions</div>
-          <div class="stat-val" id="ov-positions">0</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="sec-title">Recent Activity</div>
-        <div id="recent-list"><div class="empty">No activity yet</div></div>
-      </div>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Total Invested</div>
+      <div class="stat-value gold" id="total-invested">0</div>
     </div>
-
-    <!-- ── INVEST ──────────────────────────────── -->
-    <div class="tab-pane" id="tab-invest">
-      <div class="card mb">
-        <div class="sec-title">Choose Tier <span>Select an amount to invest</span></div>
-        <div class="tier-grid" id="tier-grid"></div>
-        <div class="tier-info-box" id="tier-info">Select a tier above to view details</div>
-        <button class="btn btn-primary" style="width:100%;padding:14px;margin-top:14px;" id="btn-invest" onclick="doPayment()" disabled>
-          Invest Now
-        </button>
-      </div>
-
-      <div class="card">
-        <div class="sec-title">How It Works</div>
-        <div style="display:flex;flex-direction:column;gap:14px;margin-top:8px;">
-          <div class="step">
-            <div class="step-num" style="background:var(--gold-dim);color:var(--gold);">1</div>
-            <div><div class="step-title">Choose a tier and pay</div><div class="step-desc">Your deposit enters the FIFO queue for that amount tier</div></div>
-          </div>
-          <div class="step">
-            <div class="step-num" style="background:var(--gold-dim);color:var(--gold);">2</div>
-            <div><div class="step-title">Your payment credits the person ahead</div><div class="step-desc">40% of your deposit goes to the oldest queue participant &mdash; 60% to the house</div></div>
-          </div>
-          <div class="step">
-            <div class="step-num" style="background:var(--gold-dim);color:var(--gold);">3</div>
-            <div><div class="step-title">The next investor credits you</div><div class="step-desc">When the next person invests in your tier, 40% lands in your wallet</div></div>
-          </div>
-          <div class="step">
-            <div class="step-num" style="background:var(--green-dim);color:var(--green);">4</div>
-            <div><div class="step-title">Withdraw at KES 2,000</div><div class="step-desc">Invest across tiers to accumulate faster &mdash; payout via M-Pesa</div></div>
-          </div>
-        </div>
-      </div>
+    <div class="stat-card">
+      <div class="stat-label">Credits Earned</div>
+      <div class="stat-value green" id="total-credits">0</div>
     </div>
-
-    <!-- ── POSITIONS ───────────────────────────── -->
-    <div class="tab-pane" id="tab-positions">
-      <div class="card">
-        <div class="sec-title">Your Queue Positions <span id="pos-count"></span></div>
-        <div id="pos-list"><div class="empty">No positions yet &mdash; invest to get started</div></div>
-      </div>
+    <div class="stat-card">
+      <div class="stat-label">Queue Position</div>
+      <div class="stat-value" id="queue-pos">—</div>
     </div>
+  </div>
 
-    <!-- ── HISTORY ─────────────────────────────── -->
-    <div class="tab-pane" id="tab-history">
-      <div class="card">
-        <div class="sec-title">Transaction History</div>
-        <div id="hist-list"><div class="empty">No transactions yet</div></div>
-      </div>
-    </div>
+  <div class="tier-grid" id="tier-grid"></div>
 
-    <!-- ── ADMIN ───────────────────────────────── -->
-    <div class="tab-pane" id="tab-admin">
-      <div class="admin-grid">
-        <div class="house-stat">
-          <div class="stat-lbl">House Balance</div>
-          <div class="stat-val gold" id="adm-hbal">—</div>
-        </div>
-        <div class="house-stat">
-          <div class="stat-lbl">Total Collected</div>
-          <div class="stat-val" id="adm-htot">—</div>
-        </div>
-      </div>
+  <button class="btn-primary" id="invest-btn" disabled>Select an amount</button>
 
-      <div class="card mb">
-        <div class="sec-title">Queue Depths</div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;" id="adm-queues"></div>
-      </div>
-
-      <div class="card">
-        <div class="sec-title">Withdrawal Requests <span id="adm-pcount"></span></div>
-        <div id="adm-wr-list"><div class="empty">No pending requests</div></div>
-      </div>
-    </div>
-
-  </div><!-- /content -->
-</div><!-- /app-screen -->
-
-<!-- ═══════════════════════════════════════════════════════════════════════
-     WITHDRAW MODAL
-════════════════════════════════════════════════════════════════════════ -->
-<div class="modal-overlay hidden" id="wd-modal">
-  <div class="modal">
-    <div class="modal-title">Request Withdrawal</div>
-    <div class="modal-sub">Enter your M-Pesa details to receive your payout</div>
-    <label class="form-lbl">M-Pesa Phone Number</label>
-    <input class="form-input" type="tel" id="wd-phone" placeholder="07XXXXXXXX">
-    <label class="form-lbl">Account Name (as on M-Pesa)</label>
-    <input class="form-input" type="text" id="wd-name" placeholder="Full name">
-    <div class="modal-note">
-      Payout amount: <strong style="color:var(--gold)" id="wd-preview">KES 0</strong>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeWithdraw()">Cancel</button>
-      <button class="btn btn-primary" id="wd-confirm" onclick="submitWithdrawal()">Confirm</button>
-    </div>
+  <div class="tx-list">
+    <div style="margin-bottom: 12px; font-size: 13px; font-weight: 600;">Transaction History</div>
+    <div id="tx-list"></div>
   </div>
 </div>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+<div class="modal-overlay hidden" id="payment-modal">
+  <div class="modal">
+    <h3>Confirm Investment</h3>
+    <div>You pay</div>
+    <div class="modal-amount" id="modal-pay">KES 0</div>
+    <div>You receive credit</div>
+    <div class="modal-amount" id="modal-get" style="font-size: 28px;">KES 0</div>
+    <button class="btn-primary" id="confirm-pay-btn" style="margin-top: 20px;">Confirm Payment</button>
+    <button class="btn-outline" id="cancel-modal-btn" style="margin-top: 10px;">Cancel</button>
+  </div>
+</div>
 
-<!-- ═══════════════════════════════════════════════════════════════════════
-     JAVASCRIPT
-════════════════════════════════════════════════════════════════════════ -->
+<div class="toast hidden" id="toast"></div>
+
 <script>
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyCO4bCT2Si5F88LIYT-VStxTh8dbQJVqKM",
+    authDomain: "fifo-payout-engine.firebaseapp.com",
+    projectId: "fifo-payout-engine",
+    storageBucket: "fifo-payout-engine.firebasestorage.app",
+    messagingSenderId: "887817353062",
+    appId: "1:887817353062:web:efe94e1b7c561183f53aa7"
+  };
 
-// ─────────────────────────────────────────────────────────────────────────
-//  CONFIGURATION
-//  Fill in your Firebase project settings below.
-//  Get them from: Firebase Console → Project Settings → General → Your apps
-// ─────────────────────────────────────────────────────────────────────────
-const FIREBASE_CONFIG = {
-  apiKey:            "AIzaSyCO4bCT2Si5F88LIYT-VStxTh8dbQJVqKM",
-  authDomain:        "fifo-payout-engine.firebaseapp.com",
-  projectId:         "fifo-payout-engine",
-  storageBucket:     "fifo-payout-engine.firebasestorage.app",
-  messagingSenderId: "887817353062",
-  appId:             "1:887817353062:web:efe94e1b7c561183f53aa7",
-  measurementId:     "G-ZCYMD6XKFD",
-};
+  firebase.initializeApp(FIREBASE_CONFIG);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-// ─────────────────────────────────────────────────────────────────────────
-//  PAYSTACK
-//  Public key:  used for the payment popup (safe client-side)
-//  Secret key:  ONLY used in admin panel for transfer initiation.
-//               ⚠ Move to a Firebase Cloud Function in production.
-// ─────────────────────────────────────────────────────────────────────────
-const PS_PUBLIC = "pk_live_b5b263db48d465e81a40d4b18daca587275b482c";
-const PS_SECRET = "sk_live_d8dfb4673fec26921d66af59e7e711845225d790";
+  const TIERS = [50, 100, 200, 500, 1000, 2500, 3500, 5000, 6000, 12000, 20000, 25000];
+  const PROFIT_RATE = 0.4;
 
-// ─────────────────────────────────────────────────────────────────────────
-//  PLATFORM CONSTANTS
-//  ADMIN_EMAILS: your Gmail address(es) that should see the Admin tab
-// ─────────────────────────────────────────────────────────────────────────
-const TIERS        = [100, 200, 300, 500, 800, 1000];
-const PAYOUT_RATE  = 0.40;   // 40% of each deposit → front of queue
-const HOUSE_RATE   = 0.60;   // 60% → house
-const WITHDRAW_MIN = 2000;   // minimum wallet balance (KES) before withdrawal
-const ADMIN_EMAILS = ["elviskiprono098@gmail.com"];  // ← change to your email
+  let currentUser = null;
+  let selectedTier = null;
+  let unsubscribeFns = [];
 
-// ─────────────────────────────────────────────────────────────────────────
-//  FIREBASE INIT
-// ─────────────────────────────────────────────────────────────────────────
-firebase.initializeApp(FIREBASE_CONFIG);
-const auth = firebase.auth();
-const db   = firebase.firestore();
+  // DOM Elements
+  const authScreen = document.getElementById('auth-screen');
+  const appScreen = document.getElementById('app-screen');
+  const googleBtn = document.getElementById('google-signin-btn');
+  const signoutBtn = document.getElementById('signout-btn');
+  const tierGrid = document.getElementById('tier-grid');
+  const investBtn = document.getElementById('invest-btn');
+  const balanceEl = document.getElementById('balance');
+  const queueStatusEl = document.getElementById('queue-status');
+  const totalInvestedEl = document.getElementById('total-invested');
+  const totalCreditsEl = document.getElementById('total-credits');
+  const queuePosEl = document.getElementById('queue-pos');
+  const txListEl = document.getElementById('tx-list');
+  const modal = document.getElementById('payment-modal');
+  const modalPay = document.getElementById('modal-pay');
+  const modalGet = document.getElementById('modal-get');
+  const confirmPayBtn = document.getElementById('confirm-pay-btn');
+  const cancelModalBtn = document.getElementById('cancel-modal-btn');
+  const toastEl = document.getElementById('toast');
+  const userNameSpan = document.getElementById('user-name');
+  const userAvatarImg = document.getElementById('user-avatar');
 
-let curUser    = null;
-let userData   = {};
-let selectedTier = null;
-let unsubs     = [];
-
-// ─────────────────────────────────────────────────────────────────────────
-//  AUTH
-// ─────────────────────────────────────────────────────────────────────────
-function signInGoogle() {
-  const p = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(p).catch(e => showToast(e.message, 'error'));
-}
-
-function doSignOut() {
-  unsubs.forEach(u => u());
-  unsubs = [];
-  auth.signOut();
-}
-
-auth.onAuthStateChanged(async user => {
-  if (user) {
-    curUser = user;
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app-screen').style.display  = 'block';
-    document.getElementById('hdr-name').textContent    = user.displayName?.split(' ')[0] || '';
-    document.getElementById('hdr-avatar').src          = user.photoURL || '';
-    if (ADMIN_EMAILS.includes(user.email)) {
-      document.getElementById('admin-tab').classList.remove('hidden');
-    }
-    await seedUser(user);
-    startRealtime(user.uid);
-    buildTierGrid();
-  } else {
-    curUser = null;
-    document.getElementById('auth-screen').style.display = 'flex';
-    document.getElementById('app-screen').style.display  = 'none';
+  function showToast(msg, isError = false) {
+    toastEl.textContent = msg;
+    toastEl.style.background = isError ? '#2a1215' : '#1a2a1a';
+    toastEl.style.borderColor = isError ? '#ff4d6a' : '#2ecc9a';
+    toastEl.classList.remove('hidden');
+    setTimeout(() => toastEl.classList.add('hidden'), 3000);
   }
-});
 
-async function seedUser(user) {
-  const ref  = db.collection('users').doc(user.uid);
-  const snap = await ref.get();
-  if (!snap.exists) {
-    await ref.set({
-      displayName:   user.displayName,
-      email:         user.email,
-      photoURL:      user.photoURL,
-      walletBalance: 0,
-      totalInvested: 0,
-      totalCredits:  0,
-      createdAt:     firebase.firestore.FieldValue.serverTimestamp()
+  // Render tier grid
+  function renderTiers() {
+    tierGrid.innerHTML = TIERS.map(amt => `
+      <div class="tier-card" data-tier="${amt}">
+        <div class="tier-amount">KES ${amt.toLocaleString()}</div>
+        <div class="tier-get">+${(amt * PROFIT_RATE).toLocaleString()} credit</div>
+      </div>
+    `).join('');
+
+    document.querySelectorAll('.tier-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        selectedTier = parseInt(card.dataset.tier);
+        investBtn.disabled = false;
+        investBtn.textContent = `Invest KES ${selectedTier.toLocaleString()}`;
+      });
     });
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────
-//  REALTIME LISTENERS
-// ─────────────────────────────────────────────────────────────────────────
-function startRealtime(uid) {
-  const u1 = db.collection('users').doc(uid).onSnapshot(s => {
-    if (!s.exists) return;
-    userData = s.data();
-    renderOverview();
-  });
-
-  const u2 = db.collection('transactions')
-    .where('uid', '==', uid)
-    .orderBy('timestamp', 'desc')
-    .limit(30)
-    .onSnapshot(s => {
-      const txs = s.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderTxLists(txs);
-    });
-
-  const u3 = db.collection('positions')
-    .where('uid', '==', uid)
-    .orderBy('joinedAt', 'desc')
-    .onSnapshot(s => {
-      const ps = s.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderPositions(ps);
-    });
-
-  unsubs.push(u1, u2, u3);
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-//  RENDER: OVERVIEW
-// ─────────────────────────────────────────────────────────────────────────
-function renderOverview() {
-  const bal = userData.walletBalance || 0;
-  document.getElementById('ov-balance').textContent  = `KES ${kfmt(bal)}`;
-  document.getElementById('ov-invested').textContent = kfmt(userData.totalInvested || 0);
-  document.getElementById('ov-credits').textContent  = kfmt(userData.totalCredits  || 0);
-
-  const can = bal >= WITHDRAW_MIN && !userData.pendingWithdrawal;
-  const btn = document.getElementById('btn-withdraw');
-  btn.disabled = !can;
-
-  const st = document.getElementById('ov-status');
-  if (userData.pendingWithdrawal) {
-    st.textContent = 'Withdrawal in progress — you will be paid shortly';
-    st.style.color = 'var(--amber)';
-  } else if (can) {
-    st.textContent = 'Balance ready — withdraw now';
-    st.style.color = 'var(--green)';
-  } else {
-    const need = WITHDRAW_MIN - bal;
-    st.textContent = `KES ${kfmt(need)} more needed to unlock withdrawal`;
-    st.style.color = 'var(--muted)';
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-//  RENDER: TRANSACTIONS
-// ─────────────────────────────────────────────────────────────────────────
-const TX_ICON  = { deposit:'↓', credit:'+', withdrawal:'↑' };
-const TX_LABEL = { deposit:'Investment', credit:'Queue Credit', withdrawal:'Withdrawal' };
-
-function txHtml(tx, showRef) {
-  const cls = tx.type === 'deposit' ? 'pos' : tx.type === 'credit' ? 'cred' : 'neg';
-  const sgn = tx.type === 'withdrawal' ? '−' : '+';
-  return `
-    <div class="tx-item">
-      <div class="tx-icon ${tx.type}">${TX_ICON[tx.type] || '·'}</div>
-      <div class="tx-info">
-        <div class="tx-type">${TX_LABEL[tx.type] || tx.type}</div>
-        ${tx.reference && showRef ? `<div class="tx-ref">${tx.reference}</div>` : ''}
-        <div class="tx-date">${dtfmt(tx.timestamp)}</div>
-      </div>
-      <div class="tx-amount ${cls}">${sgn}KES ${kfmt(tx.amount)}</div>
-    </div>`;
-}
-
-function renderTxLists(txs) {
-  document.getElementById('ov-positions').textContent = txs.filter(t=>t.type==='deposit').length;
-  const recentEl = document.getElementById('recent-list');
-  recentEl.innerHTML = txs.length
-    ? txs.slice(0,5).map(t=>txHtml(t,false)).join('')
-    : '<div class="empty">No activity yet</div>';
-
-  const histEl = document.getElementById('hist-list');
-  histEl.innerHTML = txs.length
-    ? txs.map(t=>txHtml(t,true)).join('')
-    : '<div class="empty">No transactions yet</div>';
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-//  RENDER: POSITIONS
-// ─────────────────────────────────────────────────────────────────────────
-function renderPositions(ps) {
-  const active = ps.filter(p => p.status !== 'settled').length;
-  document.getElementById('pos-count').textContent = active ? `${active} waiting` : '';
-
-  const el = document.getElementById('pos-list');
-  el.innerHTML = ps.length ? ps.map(p => `
-    <div class="pos-item">
-      <div>
-        <div class="pos-tier">KES ${p.tier} Tier</div>
-        <div class="pos-date">${dtfmt(p.joinedAt)}</div>
-      </div>
-      <div style="text-align:right;">
-        <div class="pos-bal">KES ${kfmt(p.balance)}</div>
-        <div class="badge ${p.status === 'settled' ? 'badge-done' : 'badge-wait'}">
-          ${p.status === 'settled' ? 'Settled' : 'Waiting'}
-        </div>
-      </div>
-    </div>
-  `).join('') : '<div class="empty">No positions yet &mdash; invest to join a queue</div>';
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-//  TIER GRID
-// ─────────────────────────────────────────────────────────────────────────
-function buildTierGrid() {
-  document.getElementById('tier-grid').innerHTML = TIERS.map(t => `
-    <div class="tier-card" id="tc-${t}" onclick="pickTier(${t})">
-      <div class="tier-amt">${t}</div>
-      <div class="tier-unit">KES</div>
-      <div class="tier-credit">+${t * PAYOUT_RATE} credit</div>
-    </div>
-  `).join('');
-}
-
-function pickTier(amount) {
-  selectedTier = amount;
-  document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('sel'));
-  document.getElementById(`tc-${amount}`).classList.add('sel');
-  document.getElementById('btn-invest').disabled = false;
-  document.getElementById('tier-info').innerHTML = `
-    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-      <div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;">You invest</div>
-           <div style="font-size:16px;font-weight:700;color:var(--gold);margin-top:2px;">KES ${amount}</div></div>
-      <div><div style="font-size:10px;color:var(--muted);">You pay forward</div>
-           <div style="font-family:'Fira Code',monospace;font-size:13px;color:var(--green);">KES ${amount*PAYOUT_RATE} → queue front</div></div>
-      <div><div style="font-size:10px;color:var(--muted);">You receive (next entry)</div>
-           <div style="font-family:'Fira Code',monospace;font-size:13px;color:var(--gold);">KES ${amount*PAYOUT_RATE} credit</div></div>
-    </div>`;
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-//  PAYSTACK — Initiate Deposit
-// ─────────────────────────────────────────────────────────────────────────
-function doPayment() {
-  if (!selectedTier || !curUser) return;
-  const ref = `FIFO-${Date.now()}-${Math.random().toString(36).slice(2,8).toUpperCase()}`;
-
-  const handler = PaystackPop.setup({
-    key:      PS_PUBLIC,
-    email:    curUser.email,
-    amount:   selectedTier * 100,  // Paystack expects amount × 100 (KES smallest unit)
-    currency: 'KES',
-    ref,
-    metadata: {
-      custom_fields: [
-        { display_name:'User ID', variable_name:'uid',  value: curUser.uid      },
-        { display_name:'Tier',    variable_name:'tier', value: `${selectedTier}` }
-      ]
-    },
-    callback: async res => {
-      showToast('Payment confirmed — processing...', 'info');
-      await processDeposit(curUser.uid, curUser.displayName, selectedTier, res.reference);
-    },
-    onClose: () => showToast('Payment window closed', 'info')
-  });
-
-  handler.openIframe();
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-//  FIFO ENGINE — Core payout logic
-//
-//  On each deposit of amount X into tier X:
-//    1. Find the oldest 'active' position in tier X (FIFO front)
-//    2. Credit that user's wallet with X × 40%
-//    3. Mark that position as 'settled'
-//    4. House gets X × 60%
-//    5. New depositor: wallet += X, new position added to back of queue
-// ─────────────────────────────────────────────────────────────────────────
-async function processDeposit(uid, displayName, amount, reference) {
-  try {
-    // Query front of queue OUTSIDE the transaction (Firestore limitation)
-    const frontSnap = await db.collection('positions')
-      .where('tier',   '==', amount)
-      .where('status', '==', 'active')
-      .orderBy('joinedAt')
-      .limit(1)
-      .get();
-
-    await db.runTransaction(async tx => {
-      const credit     = amount * PAYOUT_RATE;
-      const houseShare = amount * HOUSE_RATE;
-
-      // ── 1. Credit front-of-queue user ──────────────
-      if (!frontSnap.empty) {
-        const frontDoc  = frontSnap.docs[0];
-        const frontData = frontDoc.data();
-        const fUserRef  = db.collection('users').doc(frontData.uid);
-        const fUserSnap = await tx.get(fUserRef);
-        const fd        = fUserSnap.data() || {};
-
-        tx.update(fUserRef, {
-          walletBalance: (fd.walletBalance || 0) + credit,
-          totalCredits:  (fd.totalCredits  || 0) + credit
-        });
-
-        // Mark position settled
-        tx.update(frontDoc.ref, { status: 'settled' });
-
-        // Log credit tx for the credited user
-        tx.set(db.collection('transactions').doc(), {
-          uid:       frontData.uid,
-          type:      'credit',
-          amount:    credit,
-          fromTier:  amount,
-          fromUid:   uid,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  // FIFO payout processor
+  async function processFIFOPayouts() {
+    const usersRef = db.collection('users');
+    const usersSnap = await usersRef.get();
+    
+    const eligibleUsers = [];
+    for (const doc of usersSnap.docs) {
+      const data = doc.data();
+      if (data.walletBalance >= 1000) {
+        eligibleUsers.push({
+          id: doc.id,
+          balance: data.walletBalance,
+          reachedAt: data.reached1000At || '9999'
         });
       }
-
-      // ── 2. House cut ───────────────────────────────
-      const hRef  = db.collection('house').doc('stats');
-      const hSnap = await tx.get(hRef);
-      const hd    = hSnap.data() || {};
-      tx.set(hRef, {
-        balance:       (hd.balance        || 0) + houseShare,
-        totalCollected:(hd.totalCollected  || 0) + amount
-      }, { merge: true });
-
-      // ── 3. Depositor: add to wallet + create position ─
-      const dRef  = db.collection('users').doc(uid);
-      const dSnap = await tx.get(dRef);
-      const dd    = dSnap.data() || {};
-      tx.update(dRef, {
-        walletBalance: (dd.walletBalance || 0) + amount,
-        totalInvested: (dd.totalInvested || 0) + amount
-      });
-
-      tx.set(db.collection('positions').doc(), {
-        uid, displayName, tier: amount, balance: amount,
-        status: 'active',
-        joinedAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      // ── 4. Log deposit tx ──────────────────────────
-      tx.set(db.collection('transactions').doc(), {
-        uid, type: 'deposit', amount, reference,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-    });
-
-    showToast(`KES ${amount} invested successfully`, 'success');
-    gotoTab('overview');
-
-  } catch (err) {
-    console.error('Deposit error:', err);
-    showToast('Transaction error — please try again', 'error');
+    }
+    
+    eligibleUsers.sort((a, b) => (a.reachedAt || '').localeCompare(b.reachedAt || ''));
+    
+    for (const user of eligibleUsers) {
+      if (user.balance >= 1000) {
+        const userRef = db.collection('users').doc(user.id);
+        const newBalance = user.balance - 1000;
+        
+        await userRef.update({ walletBalance: newBalance });
+        
+        await db.collection('transactions').add({
+          uid: user.id,
+          type: 'withdraw',
+          amount: 1000,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        if (newBalance < 1000 && user.reachedAt !== '9999') {
+          await userRef.update({ reached1000At: firebase.firestore.FieldValue.delete() });
+        }
+      }
+    }
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────
-//  WITHDRAWAL — User side (creates a request for admin to process)
-// ─────────────────────────────────────────────────────────────────────────
-function openWithdraw() {
-  const bal = userData?.walletBalance || 0;
-  if (bal < WITHDRAW_MIN) { showToast('Balance too low', 'error'); return; }
-  if (userData?.pendingWithdrawal)  { showToast('Withdrawal already in progress', 'info'); return; }
-  document.getElementById('wd-preview').textContent = `KES ${kfmt(bal)}`;
-  document.getElementById('wd-name').value = curUser.displayName || '';
-  document.getElementById('wd-modal').classList.remove('hidden');
-}
-
-function closeWithdraw() {
-  document.getElementById('wd-modal').classList.add('hidden');
-}
-
-async function submitWithdrawal() {
-  const phone = document.getElementById('wd-phone').value.trim();
-  const name  = document.getElementById('wd-name').value.trim();
-  const bal   = userData?.walletBalance || 0;
-
-  if (!phone) { showToast('Enter your M-Pesa phone number', 'error'); return; }
-  if (!name)  { showToast('Enter the account name', 'error'); return; }
-  if (bal < WITHDRAW_MIN) { showToast('Balance too low', 'error'); return; }
-
-  const btn = document.getElementById('wd-confirm');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>';
-
-  try {
-    await db.collection('withdrawals').add({
-      uid: curUser.uid, displayName: curUser.displayName,
-      email: curUser.email, phone, name, amount: bal,
-      status: 'pending',
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    await db.collection('users').doc(curUser.uid).update({ pendingWithdrawal: true });
-
-    closeWithdraw();
-    showToast('Withdrawal request submitted — you will be paid shortly', 'success');
-  } catch (e) {
-    showToast('Could not submit request — try again', 'error');
-    console.error(e);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Confirm';
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-//  ADMIN — House stats, queue overview, payout processing
-// ─────────────────────────────────────────────────────────────────────────
-let adminLoaded = false;
-
-function loadAdmin() {
-  if (adminLoaded) return;
-  adminLoaded = true;
-
-  // House stats
-  const u = db.collection('house').doc('stats').onSnapshot(s => {
-    const d = s.data() || {};
-    document.getElementById('adm-hbal').textContent = kfmt(d.balance        || 0);
-    document.getElementById('adm-htot').textContent = kfmt(d.totalCollected || 0);
-  });
-  unsubs.push(u);
-
-  // Queue depths
-  const qEl = document.getElementById('adm-queues');
-  qEl.innerHTML = '';
-  TIERS.forEach(tier => {
-    const div = document.createElement('div');
-    div.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;';
-    div.innerHTML = `<div style="font-family:'Fira Code',monospace;font-size:20px;font-weight:500;color:var(--gold);" id="aq-${tier}">—</div>
-                     <div style="font-size:10px;color:var(--muted);margin-top:2px;">KES ${tier}</div>`;
-    qEl.appendChild(div);
-    db.collection('positions').where('tier','==',tier).where('status','==','active')
-      .onSnapshot(s => { document.getElementById(`aq-${tier}`).textContent = s.size; });
-  });
-
-  // Pending withdrawals
-  const u2 = db.collection('withdrawals').where('status','==','pending').onSnapshot(s => {
-    const items = s.docs.map(d => ({ id: d.id, ...d.data() }));
-    document.getElementById('adm-pcount').textContent = items.length ? `${items.length} pending` : '';
-    const el = document.getElementById('adm-wr-list');
-    el.innerHTML = items.length ? items.map(w => `
-      <div class="withdraw-req">
-        <div>
-          <div class="wr-name">${w.displayName}</div>
-          <div class="wr-phone">${w.phone}</div>
-          <div class="wr-date">${dtfmt(w.createdAt)}</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="wr-amt">KES ${kfmt(w.amount)}</div>
-          <button class="btn btn-success" style="padding:5px 12px;font-size:11px;"
-            onclick="adminPay('${w.id}','${w.phone}','${(w.name||w.displayName).replace(/'/g,'\\'')}',${w.amount},'${w.uid}')">
-            Pay via M-Pesa
-          </button>
-        </div>
-      </div>
-    `).join('') : '<div class="empty">No pending requests</div>';
-  });
-  unsubs.push(u2);
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-//  ADMIN — Paystack Transfer (M-Pesa)
-//  ⚠ The secret key is used here. For production security, move this
-//    logic into a Firebase Cloud Function so the key is never exposed.
-// ─────────────────────────────────────────────────────────────────────────
-async function adminPay(wId, phone, name, amount, uid) {
-  if (!confirm(`Pay KES ${kfmt(amount)} to ${phone} (${name})?`)) return;
-
-  try {
-    // Normalise to 254XXXXXXXXX
-    let acct = phone.replace(/[\s\-]/g,'');
-    if (acct.startsWith('0')) acct = '254' + acct.slice(1);
-    if (acct.startsWith('+')) acct = acct.slice(1);
-
-    showToast('Creating recipient...', 'info');
-
-    // 1. Create Paystack recipient
-    const rRes = await fetch('https://api.paystack.co/transferrecipient', {
-      method:  'POST',
-      headers: { 'Authorization': `Bearer ${PS_SECRET}`, 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ type:'mobile_money', name, account_number:acct, bank_code:'MPESA', currency:'KES' })
-    });
-    const rData = await rRes.json();
-    if (!rData.status) throw new Error(rData.message || 'Recipient creation failed');
-
-    showToast('Initiating transfer...', 'info');
-
-    // 2. Initiate transfer
-    const tRes = await fetch('https://api.paystack.co/transfer', {
-      method:  'POST',
-      headers: { 'Authorization': `Bearer ${PS_SECRET}`, 'Content-Type': 'application/json' },
-      body:    JSON.stringify({
-        source:    'balance',
-        amount:    amount * 100,   // Paystack expects smallest currency unit
-        recipient: rData.data.recipient_code,
-        reason:    `FIFO Payout · ${wId}`
-      })
-    });
-    const tData = await tRes.json();
-    if (!tData.status) throw new Error(tData.message || 'Transfer failed');
-
-    // 3. Update Firestore atomically
+  // Process investment
+  async function processInvestment(amount) {
+    const profit = amount * PROFIT_RATE;
+    const totalAdd = amount + profit;
+    
+    const userRef = db.collection('users').doc(currentUser.uid);
+    const userSnap = await userRef.get();
+    const oldBalance = userSnap.data()?.walletBalance || 0;
+    const newBalance = oldBalance + totalAdd;
+    const wasBelow = oldBalance < 1000;
+    const nowAbove = newBalance >= 1000;
+    
     const batch = db.batch();
-    batch.update(db.collection('withdrawals').doc(wId), {
-      status: 'paid', paidAt: firebase.firestore.FieldValue.serverTimestamp(),
-      transferCode: tData.data.transfer_code
+    
+    batch.update(userRef, { 
+      walletBalance: newBalance,
+      totalInvested: firebase.firestore.FieldValue.increment(amount),
+      totalCredits: firebase.firestore.FieldValue.increment(profit)
     });
-    batch.update(db.collection('users').doc(uid), {
-      walletBalance:    0,
-      pendingWithdrawal: false
-    });
+    
+    if (wasBelow && nowAbove) {
+      batch.update(userRef, { reached1000At: new Date().toISOString() });
+    }
+    
     batch.set(db.collection('transactions').doc(), {
-      uid, type:'withdrawal', amount,
-      transferCode: tData.data.transfer_code,
+      uid: currentUser.uid,
+      type: 'invest',
+      amount: amount,
+      profit: profit,
+      totalAdded: totalAdd,
       timestamp: firebase.firestore.FieldValue.serverTimestamp()
     });
+    
     await batch.commit();
-
-    showToast(`KES ${kfmt(amount)} sent to ${phone}`, 'success');
-
-  } catch (err) {
-    console.error('Admin pay error:', err);
-    showToast(`Transfer failed: ${err.message}`, 'error');
+    await processFIFOPayouts();
+    showToast(`Invested KES ${amount.toLocaleString()}! +KES ${profit.toLocaleString()} credit added.`);
   }
-}
 
-// ─────────────────────────────────────────────────────────────────────────
-//  NAVIGATION
-// ─────────────────────────────────────────────────────────────────────────
-function gotoTab(name) {
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(`tab-${name}`).classList.add('active');
-  document.querySelector(`.nav-tab[data-tab="${name}"]`)?.classList.add('active');
-  if (name === 'admin') loadAdmin();
-}
+  // Open payment modal
+  function openPaymentModal(amount) {
+    modalPay.textContent = `KES ${amount.toLocaleString()}`;
+    modalGet.textContent = `KES ${(amount * PROFIT_RATE).toLocaleString()}`;
+    modal.classList.remove('hidden');
+  }
 
-// ─────────────────────────────────────────────────────────────────────────
-//  UTILS
-// ─────────────────────────────────────────────────────────────────────────
-function kfmt(n) {
-  return Number(n || 0).toLocaleString('en-KE', { minimumFractionDigits:0, maximumFractionDigits:0 });
-}
+  // Load user dashboard
+  async function loadDashboard() {
+    if (!currentUser) return;
+    
+    const userRef = db.collection('users').doc(currentUser.uid);
+    const userSnap = await userRef.get();
+    const data = userSnap.data() || { walletBalance: 0, totalInvested: 0, totalCredits: 0 };
+    
+    balanceEl.textContent = `KES ${(data.walletBalance || 0).toLocaleString()}`;
+    totalInvestedEl.textContent = (data.totalInvested || 0).toLocaleString();
+    totalCreditsEl.textContent = (data.totalCredits || 0).toLocaleString();
+    
+    // Calculate queue position
+    const allUsers = await db.collection('users').get();
+    const qualified = [];
+    for (const doc of allUsers.docs) {
+      const d = doc.data();
+      if (d.walletBalance >= 1000 && d.reached1000At) {
+        qualified.push({ id: doc.id, ts: d.reached1000At });
+      }
+    }
+    qualified.sort((a, b) => (a.ts || '').localeCompare(b.ts || ''));
+    const pos = qualified.findIndex(q => q.id === currentUser.uid) + 1;
+    
+    if (pos > 0) {
+      queuePosEl.textContent = `#${pos}`;
+      queueStatusEl.textContent = `In queue · Position ${pos} · Next payout at head`;
+    } else if ((data.walletBalance || 0) >= 1000) {
+      queuePosEl.textContent = 'pending';
+      queueStatusEl.textContent = 'Reached 1000 KES · Entering queue shortly';
+    } else {
+      const need = 1000 - (data.walletBalance || 0);
+      queuePosEl.textContent = '—';
+      queueStatusEl.textContent = `Need KES ${need.toLocaleString()} more to enter queue`;
+    }
+    
+    // Load transactions
+    const txSnap = await db.collection('transactions')
+      .where('uid', '==', currentUser.uid)
+      .orderBy('timestamp', 'desc')
+      .limit(20)
+      .get();
+    
+    if (txSnap.empty) {
+      txListEl.innerHTML = '<div class="empty">No transactions yet</div>';
+    } else {
+      txListEl.innerHTML = txSnap.docs.map(doc => {
+        const t = doc.data();
+        let typeClass = '';
+        let typeText = '';
+        let sign = '';
+        let amount = 0;
+        
+        if (t.type === 'invest') {
+          typeClass = 'invest';
+          typeText = 'Investment';
+          sign = '+';
+          amount = t.totalAdded;
+        } else if (t.type === 'withdraw') {
+          typeClass = 'withdraw';
+          typeText = 'Withdrawal';
+          sign = '-';
+          amount = t.amount;
+        } else {
+          typeClass = 'credit';
+          typeText = 'Credit';
+          sign = '+';
+          amount = t.amount;
+        }
+        
+        const date = t.timestamp?.toDate?.() || new Date();
+        return `
+          <div class="tx-item">
+            <div>
+              <div class="tx-type ${typeClass}">${typeText}</div>
+              <div class="tx-date">${date.toLocaleDateString()}</div>
+            </div>
+            <div class="tx-amount">${sign} KES ${amount.toLocaleString()}</div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
 
-function dtfmt(ts) {
-  if (!ts) return '—';
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
-  return d.toLocaleDateString('en-KE', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-}
+  // Auth state
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      currentUser = user;
+      authScreen.style.display = 'none';
+      appScreen.style.display = 'block';
+      
+      userNameSpan.textContent = user.displayName?.split(' ')[0] || '';
+      userAvatarImg.src = user.photoURL || '';
+      
+      const userRef = db.collection('users').doc(user.uid);
+      const snap = await userRef.get();
+      if (!snap.exists()) {
+        await userRef.set({
+          email: user.email,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          walletBalance: 0,
+          totalInvested: 0,
+          totalCredits: 0,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+      
+      renderTiers();
+      await loadDashboard();
+      
+      unsubscribeFns.push(
+        db.collection('users').doc(user.uid).onSnapshot(() => loadDashboard())
+      );
+    } else {
+      currentUser = null;
+      authScreen.style.display = 'flex';
+      appScreen.style.display = 'none';
+      unsubscribeFns.forEach(fn => fn());
+      unsubscribeFns = [];
+    }
+  });
 
-let toastTimer;
-function showToast(msg, type = 'info') {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className   = `toast ${type} show`;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 3600);
-}
-
-// Close modal on backdrop click
-document.getElementById('wd-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('wd-modal')) closeWithdraw();
-});
-
+  // Event Listeners
+  googleBtn.onclick = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+  signoutBtn.onclick = () => auth.signOut();
+  
+  investBtn.onclick = () => {
+    if (selectedTier) openPaymentModal(selectedTier);
+  };
+  
+  confirmPayBtn.onclick = async () => {
+    modal.classList.add('hidden');
+    if (selectedTier) {
+      await processInvestment(selectedTier);
+      selectedTier = null;
+      investBtn.disabled = true;
+      investBtn.textContent = 'Select an amount';
+      document.querySelectorAll('.tier-card').forEach(c => c.classList.remove('selected'));
+    }
+  };
+  
+  cancelModalBtn.onclick = () => modal.classList.add('hidden');
+  
+  modal.onclick = (e) => { if (e.target === modal) modal.classList.add('hidden'); };
+  
+  renderTiers();
 </script>
 </body>
 </html>
